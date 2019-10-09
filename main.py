@@ -6,6 +6,8 @@ from TwoDimThreadedDctCalculator import TwoDimThreadedDctCalculator
 from OneDimThreadedDctCalculator import OneDimThreadedDctCalculator
 from ScipyDctCalculator import ScipyDctCalculator
 from NaiveThreadedDctCalculator import NaiveThreadedDctCalculator
+from BlockThreadedDctCalculator import BlockThreadedDctCalculator
+from BlockDctCalculator import BlockDctCalculator
 
 def main(file):
     image = open_image(file)
@@ -19,13 +21,15 @@ def open_image(file):
 
 def run_tests(image):
     scorer = Scorer(image, show_results=True)
-    one_dim_calc = OneDimThreadedDctCalculator(image)
-    two_dim_calc = TwoDimThreadedDctCalculator(image)
+    block_threaded_calc = BlockThreadedDctCalculator(image)
+    block_calc = BlockDctCalculator(image)
     naive_calc = NaiveDctCalculator(image)
     scipy_calc = ScipyDctCalculator(image)
     naive_threaded_calc = NaiveThreadedDctCalculator(image)
 
-    # scorer.run_test(scipy_calc)
+    scorer.run_test(block_threaded_calc)
+    scorer.run_test(block_calc)
+    #scorer.run_test(scipy_calc)
     # scorer.run_test(one_dim_calc)
     # scorer.run_test(two_dim_calc)
     scorer.run_test(naive_threaded_calc)
