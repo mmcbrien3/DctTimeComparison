@@ -1,10 +1,11 @@
 import dippykit as dip
 import numpy as np
 from Scorer import Scorer
-from LibraryLessDctCalculator import LibraryLessDctCalculator
-from NumpyBlockDctCalculator import NumpyBlockDctCalculator
-from NumpyDctCalculator import NumpyDctCalculator
-
+from NaiveDctCalculator import NaiveDctCalculator
+from TwoDimThreadedDctCalculator import TwoDimThreadedDctCalculator
+from OneDimThreadedDctCalculator import OneDimThreadedDctCalculator
+from ScipyDctCalculator import ScipyDctCalculator
+from NaiveThreadedDctCalculator import NaiveThreadedDctCalculator
 
 def main(file):
     image = open_image(file)
@@ -18,13 +19,17 @@ def open_image(file):
 
 def run_tests(image):
     scorer = Scorer(image, show_results=True)
-    np_calc = NumpyDctCalculator(image)
-    np_block_calc = NumpyBlockDctCalculator(image)
+    one_dim_calc = OneDimThreadedDctCalculator(image)
+    two_dim_calc = TwoDimThreadedDctCalculator(image)
+    naive_calc = NaiveDctCalculator(image)
+    scipy_calc = ScipyDctCalculator(image)
+    naive_threaded_calc = NaiveThreadedDctCalculator(image)
 
-    np_dct = scorer.run_test(np_calc)
-    np_block_dct = scorer.run_test(np_block_calc)
-    print(np_dct == np_block_dct)
-
+    # scorer.run_test(scipy_calc)
+    # scorer.run_test(one_dim_calc)
+    # scorer.run_test(two_dim_calc)
+    scorer.run_test(naive_threaded_calc)
+    scorer.run_test(naive_calc)
 
 if __name__ == "__main__":
     filepath = "./images/ece_buzz_gray.jpg"

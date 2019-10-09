@@ -17,9 +17,12 @@ class Scorer:
         elapsed = end - start
         reconstructed = dct_calculator.perform_idct(F)
         reconstructed /= np.max(reconstructed)
+        print(reconstructed.dtype)
+        print(self.image.dtype)
         score = self.calc_score(reconstructed)
         print("Time: {}".format(elapsed))
         print("Score: {}".format(score))
+
 
         if self.show_results:
             plt.figure()
