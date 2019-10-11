@@ -13,7 +13,7 @@ class CudaBlockDctCalculator(AbstractDctCalculator):
 
     def __init__(self, image):
         super().__init__(image)
-        self.block_size = 32
+        self.block_size = 8
 
     def perform_dct(self):
         dct = np.zeros((self.M, self.N))
@@ -21,10 +21,7 @@ class CudaBlockDctCalculator(AbstractDctCalculator):
         threadsperblock = 256
         blockspergrid = (dct.size + (threadsperblock - 1)) // threadsperblock
 
-        print(blockspergrid)
-
         self.kernel_function[blockspergrid, threadsperblock](dct, self.image, self.block_size)
-
         self.kernel_function[blockspergrid, threadsperblock](dct_out, dct, self.block_size)
 
         return dct_out
@@ -43,7 +40,7 @@ class CudaBlockDctCalculator(AbstractDctCalculator):
         my_array = image_array[row, origin_col:origin_col+dct_block_size]
         sum = 0
         for i in range(len(my_array)):
-                sum += my_array[i] * math.cos(relative_col * (i + 1/2) * math.pi / dct_block_size)
+            sum += my_array[i] * math.cos(relative_col * (i + 1/2) * math.pi / dct_block_size)
         dct_array[col, row] = sum
 
     def perform_idct(self, F):
