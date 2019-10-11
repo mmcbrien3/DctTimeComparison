@@ -2,8 +2,6 @@ from AbstractDctCalculator import AbstractDctCalculator
 import scipy.fftpack as scifft
 import numpy as np
 import dippykit as dip
-from timeit import default_timer as timer
-from threading import Thread, Lock
 
 
 class BlockDctCalculator(AbstractDctCalculator):

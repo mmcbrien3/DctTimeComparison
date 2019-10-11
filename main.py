@@ -29,9 +29,7 @@ def run_tests(image):
 
     scorer.run_test(block_threaded_calc)
     scorer.run_test(block_calc)
-    #scorer.run_test(scipy_calc)
-    # scorer.run_test(one_dim_calc)
-    # scorer.run_test(two_dim_calc)
+    scorer.run_test(scipy_calc)
     scorer.run_test(naive_threaded_calc)
     scorer.run_test(naive_calc)
 

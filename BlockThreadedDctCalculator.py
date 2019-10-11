@@ -2,8 +2,7 @@ from AbstractDctCalculator import AbstractDctCalculator
 import scipy.fftpack as scifft
 import numpy as np
 import dippykit as dip
-from timeit import default_timer as timer
-from threading import Thread, Lock
+from threading import Thread
 
 
 class BlockThreadedDctCalculator(AbstractDctCalculator):
@@ -11,23 +10,24 @@ class BlockThreadedDctCalculator(AbstractDctCalculator):
     def __init__(self, image):
         super().__init__(image)
         self.bs = 128
-        self.num_threads = 2
+        self.num_threads = 4
 
     def perform_dct(self):
         dct = np.zeros((self.M, self.N))
         rows_per_thread = int(self.M/self.num_threads)
         threads = []
         for m in range(0, self.M, rows_per_thread):
-            threads.append(Thread(target=self.threaded_block_call, args=(dct, self.image[:], (m, m+rows_per_thread), self.bs)))
-            threads[-1].start()
+            t = Thread(target=self.threaded_block_call, args=(dct, self.image, (m, m+rows_per_thread)))
+            t.start()
+            threads.append(t)
         for t in threads:
             t.join()
         return dct
 
-    def threaded_block_call(self, dct, im, rows, bs):
-        for m in range(rows[0], rows[1], bs):
-            for n in range(0, self.N, bs):
-                dct[m:m+bs, n:n+bs] = self.two_dim_dct(im[m:m+bs, n:n+bs])
+    def threaded_block_call(self, dct, im, rows):
+        for m in range(rows[0], rows[1], self.bs):
+            for n in range(0, self.N, self.bs):
+                dct[m:m+self.bs, n:n+self.bs] = self.two_dim_dct(im[m:m+self.bs, n:n+self.bs])
 
     def two_dim_dct(self, matrix):
         dct = np.zeros(matrix.shape)
